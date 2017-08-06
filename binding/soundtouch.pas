@@ -15,7 +15,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 //
-// $Id: SoundTouchDLL.h 198 2014-04-06 18:06:50Z oparviai $
+// $Id: SoundTouchDLL.h 248 2017-03-05 16:36:35Z oparviai $
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -49,7 +49,7 @@ uses
 
 const
   LIB_SOUNDTOUCH = 'SoundTouchDLL.dll';
-  SOUNDTOUCH_VERSION = '1.9.2';
+  SOUNDTOUCH_VERSION = '2.0.0';
 
 type
   ST_HANDLE = pointer;
@@ -98,7 +98,7 @@ procedure soundtouch_setPitchOctaves(h: ST_HANDLE; newPitch: cfloat); cdecl; ext
 /// (-12 .. +12);
 procedure soundtouch_setPitchSemiTones(h: ST_HANDLE; newPitch: cfloat); cdecl; external LIB_SOUNDTOUCH;
 
-/// Sets the number of channels, 1 = mono, 2 = stereo
+/// Sets the number of channels, 1 = mono, 2 = stereo, n = multichannel
 procedure soundtouch_setChannels(h: ST_HANDLE; numChannels: cuint); cdecl; external LIB_SOUNDTOUCH;
 
 /// Sets sample rate.
@@ -118,6 +118,10 @@ procedure soundtouch_flush(h: ST_HANDLE); cdecl; external LIB_SOUNDTOUCH;
 /// calling this function, otherwise throws a runtime_error exception.
 procedure soundtouch_putSamples(h: ST_HANDLE; const samples: pcfloat; numSamples: cuint); cdecl; external LIB_SOUNDTOUCH;
 
+/// int16 version of soundtouch_putSamples(): This accept int16 (short) sample data
+/// and internally converts it to float format before processing
+procedure soundtouch_putSamples_i16(h: ST_HANDLE; const samples: pcshort; numSamples: cuint); cdecl; external LIB_SOUNDTOUCH;
+
 /// Clears all the samples in the object's output and internal processing
 /// buffers.
 procedure soundtouch_clear(h: ST_HANDLE); cdecl; external LIB_SOUNDTOUCH;
@@ -125,8 +129,8 @@ procedure soundtouch_clear(h: ST_HANDLE); cdecl; external LIB_SOUNDTOUCH;
 /// Changes a setting controlling the processing system behaviour. See the
 /// 'SETTING_...' defines for available setting ID's.
 /// 
-/// \return 'TRUE' if the setting was succesfully changed
-function soundtouch_setSetting(h: ST_HANDLE; settingId: cint; value: cint): cbool; cdecl; external LIB_SOUNDTOUCH;
+/// \return 'nonzero' if the setting was succesfully changed, otherwise zero
+function soundtouch_setSetting(h: ST_HANDLE; settingId: cint; value: cint): cint; cdecl; external LIB_SOUNDTOUCH;
 
 /// Reads a setting controlling the processing system behaviour. See the
 /// 'SETTING_...' defines for available setting ID's.
@@ -143,6 +147,10 @@ function soundtouch_numUnprocessedSamples(h: ST_HANDLE): cuint; cdecl; external 
 /// Used to reduce the number of samples in the buffer when accessing the sample buffer directly
 /// with 'ptrBegin' function.
 function soundtouch_receiveSamples(h: ST_HANDLE; outBuffer: pcfloat; maxSamples: cuint): cuint; cdecl; external LIB_SOUNDTOUCH;
+
+/// int16 version of soundtouch_receiveSamples(): This converts internal float samples
+/// into int16 (short) return data type
+function soundtouch_receiveSamples_i16(h: ST_HANDLE; outBuffer: pcshort; maxSamples: cuint): cuint; cdecl; external LIB_SOUNDTOUCH;
 
 /// Returns number of samples currently available.
 function soundtouch_numSamples(h: ST_HANDLE): cuint; cdecl; external LIB_SOUNDTOUCH;

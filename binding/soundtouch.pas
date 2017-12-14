@@ -15,7 +15,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 //
-// $Id: SoundTouchDLL.h 248 2017-03-05 16:36:35Z oparviai $
+// $Id: SoundTouchDLL.h 261 2017-11-10 16:38:36Z oparviai $
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -49,7 +49,41 @@ uses
 
 const
   LIB_SOUNDTOUCH = 'SoundTouchDLL.dll';
-  SOUNDTOUCH_VERSION = '2.0.0';
+  SOUNDTOUCH_VERSION = '2.0.1pre';
+
+// #ifndef _SoundTouchDLL_h_
+// #define _SoundTouchDLL_h_
+// 
+// #if defined(_WIN32) || defined(WIN32)
+//     // Windows
+//     #ifndef __cplusplus
+//         #error "Expected g++"
+//     #endif
+// 
+//     #ifdef DLL_EXPORTS
+//         #define SOUNDTOUCHDLL_API extern "C" __declspec(dllexport)
+//     #else
+//         #define SOUNDTOUCHDLL_API extern "C" __declspec(dllimport)
+//     #endif
+// 
+// #else
+//     // GNU version
+// 
+//     #ifdef DLL_EXPORTS
+//         // GCC declaration for exporting functions
+//         #define SOUNDTOUCHDLL_API extern "C" __attribute__((__visibility__("default")))
+//     #else
+//         // GCC doesn't require DLL imports
+//         #define SOUNDTOUCHDLL_API
+//     #endif
+// 
+//     // Linux-replacements for Windows declarations:
+//     #define __cdecl
+//     typedef unsigned int DWORD;
+//     #define FALSE    0
+//     #define TRUE    1
+// 
+// #endif
 
 type
   ST_HANDLE = pointer;
@@ -157,6 +191,36 @@ function soundtouch_numSamples(h: ST_HANDLE): cuint; cdecl; external LIB_SOUNDTO
 
 /// Returns nonzero if there aren't any samples available for outputting.
 function soundtouch_isEmpty(h: ST_HANDLE): cint; cdecl; external LIB_SOUNDTOUCH;
+
+/// Create a new instance of BPM detector
+function bpm_createInstance(numChannels: cint; sampleRate: cint): ST_HANDLE; cdecl; external LIB_SOUNDTOUCH;
+
+/// Destroys a BPM detector instance.
+procedure bpm_destroyInstance(h: ST_HANDLE); cdecl; external LIB_SOUNDTOUCH;
+
+/// Feed 'numSamples' sample frames from 'samples' into the BPM detector.
+procedure bpm_putSamples(h: ST_HANDLE; 
+        const samples: pcfloat; ///< Pointer to sample buffer.
+        numSamples: cuint       ///< Number of samples in buffer. Notice
+                                ///< that in case of stereo-sound a single sample
+                                ///< contains data for both channels.
+        ); cdecl; external LIB_SOUNDTOUCH;
+
+/// Feed 'numSamples' sample frames from 'samples' into the BPM detector.
+/// 16bit int sample format verson.
+procedure bpm_putSamples_i16(h: ST_HANDLE; 
+        const samples: pcshort; ///< Pointer to sample buffer.
+        numSamples: cuint       ///< Number of samples in buffer. Notice
+                                ///< that in case of stereo-sound a single sample
+                                ///< contains data for both channels.
+        ); cdecl; external LIB_SOUNDTOUCH;
+
+/// Analyzes the results and returns the BPM rate. Use this function to read result
+/// after whole song data has been input to the class by consecutive calls of
+/// 'inputSamples' function.
+///
+/// \return Beats-per-minute rate, or zero if detection failed.
+function bpm_getBpm(h: ST_HANDLE): cfloat; cdecl; external LIB_SOUNDTOUCH;
 
 
 implementation

@@ -45,7 +45,7 @@ uses
 
 const
   LIB_SOUNDTOUCH = 'SoundTouchDLL.dll';
-  SOUNDTOUCH_VERSION = '2.1.1';
+  SOUNDTOUCH_VERSION = '2.1.2';
 
 // #ifndef _SoundTouchDLL_h_
 // #define _SoundTouchDLL_h_

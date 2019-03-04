@@ -15,10 +15,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 //
-// $Id: SoundTouchDLL.h 261 2017-11-10 16:38:36Z oparviai $
-//
-////////////////////////////////////////////////////////////////////////////////
-//
 // License :
 //
 //  SoundTouch audio processing library
@@ -49,7 +45,7 @@ uses
 
 const
   LIB_SOUNDTOUCH = 'SoundTouchDLL.dll';
-  SOUNDTOUCH_VERSION = '2.0.1pre';
+  SOUNDTOUCH_VERSION = '2.1.1';
 
 // #ifndef _SoundTouchDLL_h_
 // #define _SoundTouchDLL_h_
@@ -163,7 +159,7 @@ procedure soundtouch_clear(h: ST_HANDLE); cdecl; external LIB_SOUNDTOUCH;
 /// Changes a setting controlling the processing system behaviour. See the
 /// 'SETTING_...' defines for available setting ID's.
 /// 
-/// \return 'nonzero' if the setting was succesfully changed, otherwise zero
+/// \return 'nonzero' if the setting was successfully changed, otherwise zero
 function soundtouch_setSetting(h: ST_HANDLE; settingId: cint; value: cint): cint; cdecl; external LIB_SOUNDTOUCH;
 
 /// Reads a setting controlling the processing system behaviour. See the
